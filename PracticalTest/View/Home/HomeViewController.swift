@@ -7,6 +7,7 @@
 
 import UIKit
 import ImageSlideshow
+import SDWebImage
 
 class HomeViewController: UIViewController {
     
@@ -15,11 +16,13 @@ class HomeViewController: UIViewController {
     
     private let homeViewModel = HomeViewModel()
     private let marketCode = "UZ"
-    private let productTagId = 13
+    private var productTagId = 0
     private var page = 1
-    private let randomPhotos = ["https://cdn.pixabay.com/photo/2022/04/23/20/51/nature-7152461_1280.jpg", "https://cdn.pixabay.com/photo/2022/04/23/20/51/nature-7152461_1280.jpg", "https://cdn.pixabay.com/photo/2022/04/23/20/51/nature-7152461_1280.jpg", "https://cdn.pixabay.com/photo/2022/04/23/20/51/nature-7152461_1280.jpg"]
-    private var productList = 10
     private let refreshControl = UIRefreshControl.init(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+    private var bannerData: BannerModel?
+    private var productListData: ProductListModel?
+    private var marketList = [MarketList]()
+    private var pagination: Pagination?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,13 +42,43 @@ class HomeViewController: UIViewController {
         refreshControl.triggerVerticalOffset = 50.0
         refreshControl.addTarget(self, action: #selector(paginationMore), for: .valueChanged)
         self.collectionView.bottomRefreshControl = refreshControl
+        
+        self.homeViewModel.getHomeBanner(marketCode: marketCode) { data in
+            self.bannerData = data
+            if let productTagId = self.bannerData?.data?.recommended?.productTagID {
+                self.productTagId = productTagId
+                self.homeViewModel.getProductList(page: self.page, productTagId: self.productTagId, marketCode: self.marketCode) {data in
+                    self.productListData = data
+                    if let data = self.productListData?.data, let marketList = data.marketList, let pagination = data.pagination {
+                        self.marketList = marketList
+                        self.pagination = pagination
+                    }
+                    self.collectionView.reloadData()
+                }
+            }
+        }
     }
     
     // MARK: - Pagination trigger
     @objc func paginationMore() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 6) {
+        if self.productListData != nil, let pagination = self.pagination, let totalPage = pagination.totalPage {
+            if self.page < totalPage {
+                page += 1
+                self.homeViewModel.getProductList(page: self.page, productTagId: self.productTagId, marketCode: self.marketCode) {data in
+                    self.productListData = data
+                    if let data = self.productListData?.data, let marketList = data.marketList, let pagination = data.pagination {
+                        self.marketList.append(contentsOf: marketList)
+                        self.pagination = pagination
+                    }
+                    self.refreshControl.endRefreshing()
+                    self.collectionView.reloadData()
+                }
+            } else {
+                self.refreshControl.endRefreshing()
+                self.collectionView.reloadData()
+            }
+        } else {
             self.refreshControl.endRefreshing()
-            self.productList += 6
             self.collectionView.reloadData()
         }
     }
@@ -69,12 +102,16 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             let bannerReusableView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: BannerCollectionReusableView.identifier, for: indexPath) as! BannerCollectionReusableView
 
              bannerReusableView.frame = CGRect(x: 0 , y: 0, width: collectionView.frame.width, height: 230)
-             var imageUrls = [InputSource]()
-             for randomPhoto in randomPhotos {
-                 if let imageUrl = SDWebImageSource(urlString: randomPhoto, placeholder: UIImage()) {
-                     imageUrls.append(imageUrl)
-                 }
-             }
+            var imageUrls = [InputSource]()
+            if let bannerData = self.bannerData, let data = bannerData.data, let mainBanner = data.mainBanner {
+                for banner in mainBanner {
+                    if let urlStr = banner.imageURL {
+                        if let imageUrl = SDWebImageSource(urlString: urlStr, placeholder: UIImage()) {
+                             imageUrls.append(imageUrl)
+                         }
+                    }
+                }
+            }
             bannerReusableView.imageSlider_View.setImageInputs(imageUrls)
             reusableView = bannerReusableView
         }
@@ -84,7 +121,11 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         return 1
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return productList + 1
+        if marketList.count > 0 {
+            return marketList.count + 1
+        } else {
+            return 0
+        }
     }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.item == 0 {
@@ -92,6 +133,23 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductCollectionViewCell.identifier, for: indexPath)as! ProductCollectionViewCell
+            let index = indexPath.row - 1
+            let list = marketList[index]
+            cell.productImageView.sd_setImage(with: URL(string: list.imgURL ?? ""), placeholderImage: UIImage(named: "ic_placeholder"))
+            cell.productNameLabel.text = list.name ?? ""
+            if let price = list.localPrice {
+            cell.productPriceLabel.text = Utilities.sharedInstance.ConvertNumberToCurrencyFormat(number: price)
+            } else {
+                cell.productPriceLabel.text = ""
+            }
+            if let rank = list.rank, rank >= 1 {
+                cell.productRateView.isHidden = false
+                cell.productRateView.alpha = 1.0
+                cell.productRateLabel.text = "\(rank)"
+            } else {
+                cell.productRateView.isHidden = true
+                cell.productRateView.alpha = 0.0
+            }
             return cell
         }
     }
@@ -106,7 +164,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             return CGSize(width: collectionView.frame.width, height: 20)
         } else {
             let width = (collectionView.frame.width - 30) / 2
-            return CGSize(width: width, height: width)
+            return CGSize(width: width, height: width * 1.6)
         }
     }
     

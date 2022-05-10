@@ -15,7 +15,7 @@ import Foundation
 * How to Use: -> var baseURL = Environment.Development
 * ==============================================*/
 struct Environment {
-    static let Development = "http://qvr9g.mocklab.io/"
+    static let Development = "https://gqro9.mocklab.io/"
     static let Production = ""
 }
 //===========end Struct===========================

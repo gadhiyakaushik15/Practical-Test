@@ -9,51 +9,41 @@ import Foundation
 
 class HomeViewModel: NSObject {
     // MARK: - Home banner api integration
-    func getHomeBanner(marketCode: String, completion:@escaping() -> Void){
+    func getHomeBanner(marketCode: String, completion:@escaping(BannerModel) -> Void){
         let url = String.init(format: API.home, marketCode)
         let requestHelper = RequestHelper(url: url, method: .get)
         AppLoader.sharedInstance.startLoader()
         APIManager.sharedInstance.request(with: requestHelper) { response in
-            AppLoader.sharedInstance.stopLoader()
             if response.error != nil{
-//                let json = try? JSONDecoder().decode(FailedLoginModel.self, from: response.responseData!)
-//                if let msg = json?.message{
-//                    Utilities.sharedInstance.showAlertView(title: "", message: msg)
-//                }else{
-//                    Utilities.sharedInstance.showAlertView(title: "", message: response.error!.localizedDescription)
-//                }
+                AppLoader.sharedInstance.stopLoader()
+                Utilities.sharedInstance.showAlertView(title: "", message: response.error!.localizedDescription)
             }else{
-//                let json = try? JSONDecoder().decode(LoginModel.self, from: response.responseData!)
-//                if let token = json?.data.token{
-//                    print(token)
-//                    UserDefaults.standard.setValue(token, forKey: StringTitle.accessToken)
-//                    completion()
-//                }
+                let json = try? JSONDecoder().decode(BannerModel.self, from: response.responseData!)
+                if let data = json {
+                    completion(data)
+                } else {
+                    AppLoader.sharedInstance.stopLoader()
+                    Utilities.sharedInstance.showAlertView(title: "", message: localizationBundle.localizedString(forKey: "SomethingWentWrong", value: "Search for products", table: nil))
+                }
             }
         }
     }
     
     // MARK: - Product list api integration
-    func getProductList(page:Int, productTagId: Int ,marketCode: String, completion:@escaping() -> Void){
+    func getProductList(page:Int, productTagId: Int ,marketCode: String, completion:@escaping(ProductListModel) -> Void){
         let url = String.init(format: API.productList, page, productTagId, marketCode)
         let requestHelper = RequestHelper(url: url, method: .get)
-        AppLoader.sharedInstance.startLoader()
         APIManager.sharedInstance.request(with: requestHelper) { response in
             AppLoader.sharedInstance.stopLoader()
             if response.error != nil {
-//                let json = try? JSONDecoder().decode(FailedLoginModel.self, from: response.responseData!)
-//                if let msg = json?.message{
-//                    Utilities.sharedInstance.showAlertView(title: "", message: msg)
-//                }else{
-//                    Utilities.sharedInstance.showAlertView(title: "", message: response.error!.localizedDescription)
-//                }
+                Utilities.sharedInstance.showAlertView(title: "", message: response.error!.localizedDescription)
             } else {
-//                let json = try? JSONDecoder().decode(LoginModel.self, from: response.responseData!)
-//                if let token = json?.data.token{
-//                    print(token)
-//                    UserDefaults.standard.setValue(token, forKey: StringTitle.accessToken)
-//                    completion()
-//                }
+                let json = try? JSONDecoder().decode(ProductListModel.self, from: response.responseData!)
+                if let data = json {
+                    completion(data)
+                } else {
+                    Utilities.sharedInstance.showAlertView(title: "", message: localizationBundle.localizedString(forKey: "SomethingWentWrong", value: "Search for products", table: nil))
+                }
             }
         }
     }
