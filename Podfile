@@ -5,10 +5,10 @@ target 'PracticalTest' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
   pod 'Alamofire'                                 # Network class
-  pod 'SDWebImage'                                # Image downloader from Url
+  pod 'SDWebImage'                                # Image downloader from url
   pod 'MBProgressHUD'                             # Activity indicator
   pod 'ImageSlideshow'                            # Image Slider
-  pod 'ImageSlideshow/SDWebImage'                 # Image slider Loader
+  pod 'ImageSlideshow/SDWebImage'                 # Image slider Loader form url
 
   # Pods for PracticalTest
 
