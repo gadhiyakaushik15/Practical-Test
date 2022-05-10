@@ -26,6 +26,7 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.collectionView.isHidden = true
         self.view.resizeTextElements()
         searchBar.sizeToFit()
         navigationItem.titleView = searchBar
@@ -54,6 +55,7 @@ class HomeViewController: UIViewController {
                         self.pagination = pagination
                     }
                     self.collectionView.reloadData()
+                    self.collectionView.isHidden = false
                 }
             }
         }
