@@ -10,7 +10,7 @@ import UIKit
 
 // Enum for font
 enum CustomFont: String {
-    case WorkSans = "WorkSans-"
+    case workSans = "WorkSans-"
 }
 
 // Enum for font family
@@ -27,7 +27,7 @@ extension UIFont {
         return UIFont.systemFont(ofSize: size)
     }
     class func workSans(family: WorkSansFontFamily, size: CGFloat) -> UIFont {
-        let fontName = "\(CustomFont.WorkSans.rawValue)\(family.rawValue)"
+        let fontName = "\(CustomFont.workSans.rawValue)\(family.rawValue)"
         return UIFont(name: fontName, size: size) ?? defaultFont(size: size)
     }
 }

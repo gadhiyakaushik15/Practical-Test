@@ -7,7 +7,7 @@
 
 import UIKit
 
-let appDelegate = UIApplication.shared.delegate as! AppDelegate
+let appDelegate = UIApplication.shared.delegate as? AppDelegate
 var localizationBundle: Bundle!
 
 @UIApplicationMain
@@ -43,4 +43,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
     }
 }
-

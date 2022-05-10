@@ -12,7 +12,7 @@ import SDWebImage
 
 class AppLoader: NSObject {
     static var sharedInstance = AppLoader()
-    func startLoader(){
+    func startLoader() {
         let path = Bundle.main.path(forResource: "loader", ofType: "gif")
         do {
             let screenWidth = UIScreen.main.bounds.width
@@ -20,11 +20,11 @@ class AppLoader: NSObject {
             let imageData = try Data(contentsOf: URL.init(fileURLWithPath: path!))
             let gifImageView = UIImageView.init(image: UIImage.sd_image(withGIFData: imageData))
             gifImageView.frame = CGRect(x: 0, y: 0, width: height, height: height)
-            let view = customLoaderView()
+            let view = CustomLoaderView()
             view.backgroundColor = .clear
             view.addSubview(gifImageView)
             
-            let hud = MBProgressHUD.showAdded(to: appDelegate.window!, animated: true)
+            let hud = MBProgressHUD.showAdded(to: appDelegate!.window!, animated: true)
             hud.customView = view
             hud.mode = .customView
             hud.backgroundView.style = .solidColor
@@ -37,11 +37,11 @@ class AppLoader: NSObject {
     }
     
     func stopLoader() {
-        MBProgressHUD.hide(for: appDelegate.window!, animated: true)
+        MBProgressHUD.hide(for: appDelegate!.window!, animated: true)
     }
 }
 
-class customLoaderView: UIView {
+class CustomLoaderView: UIView {
     override var intrinsicContentSize: CGSize {
         get {
             let screenWidth = UIScreen.main.bounds.width

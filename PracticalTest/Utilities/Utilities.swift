@@ -16,15 +16,15 @@ class Utilities {
             .compactMap({$0 as? UIWindowScene})
             .first?.windows
             .filter({$0.isKeyWindow}).first
-    
-    func showAlertView(title:String,message:String){
+
+    func showAlertView(title: String, message: String) {
         let alertView = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alertView.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         keyWindow?.rootViewController?.present(alertView, animated: true, completion: nil)
     }
     
-    //MARK: - Convert Number To Currency Format
-   func ConvertNumberToCurrencyFormat(number: Double) -> String {
+   // MARK: Convert Number To Currency Format
+   func convertNumberToCurrencyFormat(number: Double) -> String {
        let formatter = NumberFormatter()
        formatter.locale = Locale(identifier: "en_UZS")
        formatter.numberStyle = .currency

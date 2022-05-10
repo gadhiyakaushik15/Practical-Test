@@ -9,6 +9,7 @@ target 'PracticalTest' do
   pod 'MBProgressHUD'                             # Activity indicator
   pod 'ImageSlideshow'                            # Image Slider
   pod 'ImageSlideshow/SDWebImage'                 # Image slider Loader form url
+  pod 'SwiftLint'                                 # Tool to enforce Swift style
 
   # Pods for PracticalTest
 

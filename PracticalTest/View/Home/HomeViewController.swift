@@ -100,10 +100,11 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     // MARK: CollectionView DataSource
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         var reusableView = UICollectionReusableView()
-        if (kind == UICollectionView.elementKindSectionHeader) {
-            let bannerReusableView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: BannerCollectionReusableView.identifier, for: indexPath) as! BannerCollectionReusableView
+        switch kind {
+        case UICollectionView.elementKindSectionHeader:
+            let bannerReusableView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: BannerCollectionReusableView.identifier, for: indexPath) as? BannerCollectionReusableView
 
-             bannerReusableView.frame = CGRect(x: 0 , y: 0, width: collectionView.frame.width, height: 230)
+            bannerReusableView?.frame = CGRect(x: 0, y: 0, width: collectionView.frame.width, height: 230)
             var imageUrls = [InputSource]()
             if let bannerData = self.bannerData, let data = bannerData.data, let mainBanner = data.mainBanner {
                 for banner in mainBanner {
@@ -114,8 +115,10 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
                     }
                 }
             }
-            bannerReusableView.imageSlider_View.setImageInputs(imageUrls)
-            reusableView = bannerReusableView
+            bannerReusableView?.imageSliderView.setImageInputs(imageUrls)
+            reusableView = bannerReusableView ?? UICollectionReusableView()
+        default:
+            break
         }
         return reusableView
     }
@@ -131,16 +134,20 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.item == 0 {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecommendCollectionViewCell.identifier, for: indexPath)as! RecommendCollectionViewCell
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecommendCollectionViewCell.identifier, for: indexPath) as? RecommendCollectionViewCell else {
+                return UICollectionViewCell()
+            }
             return cell
         } else {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductCollectionViewCell.identifier, for: indexPath)as! ProductCollectionViewCell
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductCollectionViewCell.identifier, for: indexPath) as? ProductCollectionViewCell else {
+                return UICollectionViewCell()
+            }
             let index = indexPath.row - 1
             let list = marketList[index]
             cell.productImageView.sd_setImage(with: URL(string: list.imgURL ?? ""), placeholderImage: UIImage(named: "ic_placeholder"))
             cell.productNameLabel.text = list.name ?? ""
             if let price = list.localPrice {
-            cell.productPriceLabel.text = Utilities.sharedInstance.ConvertNumberToCurrencyFormat(number: price)
+            cell.productPriceLabel.text = Utilities.sharedInstance.convertNumberToCurrencyFormat(number: price)
             } else {
                 cell.productPriceLabel.text = ""
             }
@@ -169,5 +176,4 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             return CGSize(width: width, height: width * 1.6)
         }
     }
-    
 }

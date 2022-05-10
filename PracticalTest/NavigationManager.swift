@@ -10,7 +10,7 @@ import UIKit
 
 struct NavigationManager {
     static func setRootViewControllerWithNavigation(controller: UIViewController?, animated: Bool = true) {
-        guard let controller = controller, let window = appDelegate.window else { return }
+        guard let controller = controller, let window = appDelegate?.window else { return }
         let navigation = CustomNavigationController(rootViewController: controller)
         if animated {
             window.rootViewController = navigation
@@ -22,7 +22,7 @@ struct NavigationManager {
         }
     }
     static func setRootViewController(controller: UIViewController?, animated: Bool = true) {
-        guard let controller = controller, let window = appDelegate.window else { return }
+        guard let controller = controller, let window = appDelegate?.window else { return }
         if animated {
             window.rootViewController = controller
             let options = UIView.AnimationOptions.transitionCrossDissolve

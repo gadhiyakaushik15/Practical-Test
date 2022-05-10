@@ -10,7 +10,7 @@ import ImageSlideshow
 
 class BannerCollectionReusableView: UICollectionReusableView {
     
-    @IBOutlet weak var imageSlider_View: ImageSlideshow!
+    @IBOutlet weak var imageSliderView: ImageSlideshow!
     
     static let identifier = "BannerCollectionReusableView"
     
@@ -24,9 +24,9 @@ class BannerCollectionReusableView: UICollectionReusableView {
         let pageIndicator = UIPageControl()
         pageIndicator.currentPageIndicatorTintColor = .navigationBarBackground
         pageIndicator.pageIndicatorTintColor = .navigationBarTitle
-        self.imageSlider_View.pageIndicator = pageIndicator
-        self.imageSlider_View.activityIndicator = DefaultActivityIndicator(style: .large)
-        self.imageSlider_View.contentScaleMode = .scaleAspectFill
-        self.imageSlider_View.slideshowInterval = 2.0
+        self.imageSliderView.pageIndicator = pageIndicator
+        self.imageSliderView.activityIndicator = DefaultActivityIndicator(style: .large)
+        self.imageSliderView.contentScaleMode = .scaleAspectFill
+        self.imageSliderView.slideshowInterval = 2.0
     }
 }

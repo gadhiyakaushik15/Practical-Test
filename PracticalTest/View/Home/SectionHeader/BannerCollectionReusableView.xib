@@ -28,7 +28,7 @@
                 <constraint firstAttribute="trailing" secondItem="Ov1-Pd-cRI" secondAttribute="trailing" id="xhA-Il-QhR"/>
             </constraints>
             <connections>
-                <outlet property="imageSlider_View" destination="Ov1-Pd-cRI" id="k1U-P9-z5U"/>
+                <outlet property="imageSliderView" destination="Ov1-Pd-cRI" id="Afc-Cn-V5e"/>
             </connections>
             <point key="canvasLocation" x="139" y="89"/>
         </collectionReusableView>

@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 extension UIViewController {
-    func showAutoDismissAlert(alertContentText : String, time : Double){
+    func showAutoDismissAlert(alertContentText: String, time: Double) {
         let myAlertController = UIAlertController(title: "", message: alertContentText, preferredStyle: UIAlertController.Style.alert)
         self.present(myAlertController, animated: true, completion: nil)
         let when = DispatchTime.now() + time
@@ -18,7 +18,7 @@ extension UIViewController {
         }
     }
     
-    func getViewController(storyboard: UIStoryboard?, id : String) -> UIViewController? {
+    func getViewController(storyboard: UIStoryboard?, id: String) -> UIViewController? {
         if let controller = storyboard?.instantiateViewController(withIdentifier: id) {
             return controller
         } else {
@@ -29,18 +29,18 @@ extension UIViewController {
 
 extension UIView {
     func resizeTextElements() {
-        for i in 0 ..< self.subviews.count {
-            let subview : AnyObject = self.subviews[i]
-            if subview is UILabel {
-              (subview as! UILabel).font = adjustedFontForScreenSize((subview as! UILabel).font)
-            } else if subview is UIButton {
-                (subview as! UIButton).titleLabel?.font = adjustedFontForScreenSize((subview as! UIButton).titleLabel?.font)
-            } else if subview is UITextView {
-                (subview as! UITextView).font = adjustedFontForScreenSize((subview as! UITextView).font)
-            } else if subview is UITextField {
-                (subview as! UITextField).font = adjustedFontForScreenSize((subview as! UITextField).font)
-            } else if subview is UIView {
-                (subview as! UIView).resizeTextElements()
+        for index in 0 ..< self.subviews.count {
+            let subview: AnyObject = self.subviews[index]
+            if subview is UILabel, let label =  subview as? UILabel, let font = label.font {
+              label.font = adjustedFontForScreenSize(font)
+            } else if subview is UIButton, let button =  subview as? UIButton, let font = button.titleLabel!.font, let titleLabel = button.titleLabel {
+                titleLabel.font = adjustedFontForScreenSize(font)
+            } else if subview is UITextView, let textView = subview as? UITextView, let font = textView.font {
+                textView.font = adjustedFontForScreenSize(font)
+            } else if subview is UITextField, let textField = subview as? UITextField, let font = textField.font {
+                textField.font = adjustedFontForScreenSize(font)
+            } else if subview is UIView, let view = subview as? UIView {
+                view.resizeTextElements()
             }
         }
     }
@@ -80,7 +80,7 @@ extension UIColor {
     }
 }
 
-func adjustedFontForScreenSize(_ font : UIFont!) -> UIFont {
+func adjustedFontForScreenSize(_ font: UIFont!) -> UIFont {
     let fontName = font.fontName
     let fontPointSize = font.pointSize
     let screenWidth = UIScreen.main.bounds.width

@@ -18,14 +18,14 @@ class CustomNavigationController: UINavigationController {
             navBarAppearance.configureWithOpaqueBackground()
             navBarAppearance.shadowColor = .clear
             navBarAppearance.backgroundColor = .navigationBarBackground
-            navBarAppearance.titleTextAttributes = [.foregroundColor : UIColor.navigationBarTitle, .font : adjustedFontForScreenSize(UIFont.workSans(family: .semiBold, size: 20))]
+            navBarAppearance.titleTextAttributes = [.foregroundColor: UIColor.navigationBarTitle, .font: adjustedFontForScreenSize(UIFont.workSans(family: .semiBold, size: 20))]
             navigationBar.standardAppearance = navBarAppearance
             navigationBar.scrollEdgeAppearance = navBarAppearance
         } else {
             self.navigationBar.setBackgroundImage(UIImage(), for: .default)
             self.navigationBar.shadowImage = UIImage()
             self.navigationBar.barTintColor = .navigationBarBackground
-            self.navigationBar.titleTextAttributes = [.foregroundColor : UIColor.navigationBarTitle, .font : adjustedFontForScreenSize(UIFont.workSans(family: .semiBold, size: 20))]
+            self.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.navigationBarTitle, .font: adjustedFontForScreenSize(UIFont.workSans(family: .semiBold, size: 20))]
         }
         self.navigationBar.tintColor = .navigationBarTitle
         self.navigationBar.prefersLargeTitles = false

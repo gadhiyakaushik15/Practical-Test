@@ -8,11 +8,11 @@
 import Foundation
 import Alamofire
 
-final class APIManager{
+final class APIManager {
     
     static let sharedInstance: APIManager = APIManager()
     
-    func request(with requestHelper: RequestHelper?,completion : ((_ response : ResponseHelper) -> Void)?) {
+    func request(with requestHelper: RequestHelper?, completion : ((_ response: ResponseHelper) -> Void)?) {
         
         // Create request
         guard let requestData = requestHelper, let url = try? requestData.url.asURL() else {
@@ -22,19 +22,16 @@ final class APIManager{
         }
         
         // API call
-        AF.request(url, method: requestData.method, parameters: requestData.parameters) .responseData {
-            response in
+        AF.request(url, method: requestData.method, parameters: requestData.parameters) .responseData { response in
             switch response.result {
             case .success:
                 print(response.result)
                 let responseData = ResponseHelper(responseData: response.data, error: response.error)
                 completion?(responseData)
-                break
             case .failure(let error):
                 print(error)
                 let responseData = ResponseHelper(responseData: response.data, error: error)
                 completion?(responseData)
-                break
             }
         }
     }
@@ -51,7 +48,7 @@ struct RequestHelper {
     var method: HTTPMethod = .get
     var parameters: Parameters = [:]
     var encoding: ParameterEncoding = URLEncoding.default
-    var headers: [String : String]? = nil
+    var headers: [String: String] = [:]
     
     init(url: URLConvertible, method: HTTPMethod) {
         self.url = url
@@ -64,20 +61,20 @@ struct RequestHelper {
         self.parameters = parameters
     }
     
-    init(url: URLConvertible, method: HTTPMethod, headers: [String : String]?) {
+    init(url: URLConvertible, method: HTTPMethod, headers: [String: String]) {
         self.url = url
         self.method = method
         self.headers = headers
     }
     
-    init(url: URLConvertible, method: HTTPMethod, parameters: Parameters, headers: [String : String]?) {
+    init(url: URLConvertible, method: HTTPMethod, parameters: Parameters, headers: [String: String]) {
         self.url = url
         self.method = method
         self.parameters = parameters
         self.headers = headers
     }
     
-    init(url: URLConvertible, method: HTTPMethod, parameters: Parameters, encoding: ParameterEncoding, headers: [String : String]?) {
+    init(url: URLConvertible, method: HTTPMethod, parameters: Parameters, encoding: ParameterEncoding, headers: [String: String]) {
         self.url = url
         self.method = method
         self.parameters = parameters
@@ -88,9 +85,9 @@ struct RequestHelper {
 
 // Response Helper struct
 struct ResponseHelper {
-    let responseData : Data?
-    let error : Error?
-    init(responseData : Data?, error : Error?) {
+    let responseData: Data?
+    let error: Error?
+    init(responseData: Data?, error: Error?) {
         self.responseData = responseData
         self.error = error
     }

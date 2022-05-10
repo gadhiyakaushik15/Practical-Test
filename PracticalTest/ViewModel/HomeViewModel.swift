@@ -9,15 +9,15 @@ import Foundation
 
 class HomeViewModel: NSObject {
     // MARK: - Home banner api integration
-    func getHomeBanner(marketCode: String, completion:@escaping(BannerModel) -> Void){
+    func getHomeBanner(marketCode: String, completion: @escaping(BannerModel) -> Void) {
         let url = String.init(format: API.home, marketCode)
         let requestHelper = RequestHelper(url: url, method: .get)
         AppLoader.sharedInstance.startLoader()
         APIManager.sharedInstance.request(with: requestHelper) { response in
-            if response.error != nil{
+            if response.error != nil {
                 AppLoader.sharedInstance.stopLoader()
                 Utilities.sharedInstance.showAlertView(title: "", message: response.error!.localizedDescription)
-            }else{
+            } else {
                 let json = try? JSONDecoder().decode(BannerModel.self, from: response.responseData!)
                 if let data = json {
                     completion(data)
@@ -30,7 +30,7 @@ class HomeViewModel: NSObject {
     }
     
     // MARK: - Product list api integration
-    func getProductList(page:Int, productTagId: Int ,marketCode: String, completion:@escaping(ProductListModel) -> Void){
+    func getProductList(page: Int, productTagId: Int, marketCode: String, completion:@escaping(ProductListModel) -> Void) {
         let url = String.init(format: API.productList, page, productTagId, marketCode)
         let requestHelper = RequestHelper(url: url, method: .get)
         APIManager.sharedInstance.request(with: requestHelper) { response in

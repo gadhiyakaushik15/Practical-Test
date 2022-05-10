@@ -1,0 +1,8 @@
+disabled_rules: 
+  - vertical_whitespace
+  - trailing_whitespace
+
+excluded:
+  - Pods
+
+line_length: 500
